@@ -1,0 +1,51 @@
+﻿@model UserLogin
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h3>Login</h3>
+
+<form class="col-4">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group my-3">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" class="form-control">
+        <span asp-validation-for="UserName" class="text-danger"></span>
+    </div>
+    <div class="form-group my-3">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control">
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <a class="btn btn-primary">Submit</a>
+</form>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $("a").click(() => {
+            $.validator.unobtrusive.parse("form")
+            $("form").validate()
+            if ($("form").valid()) {
+                $.ajax({
+                    type: "POST",
+                    url: "/User/Login",
+                    data: $("form").serialize(),
+                    success: function(data) {
+                        if (data.success) {
+                            $.ajax({
+                                type: "GET",
+                                url: "/Account/Index",
+                                success: function(result) {
+                                    $("body").html(result)
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    </script>
+
+}
